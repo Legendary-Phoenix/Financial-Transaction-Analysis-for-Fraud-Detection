@@ -17,13 +17,19 @@ int main()
         return 1;
     }
     cout << "I reach here:" << endl;
+    string poo;
     string line;
+    //Read column headings and ignore it
     getline(file, line);
+
+    //Loop till end of file reading row by row
     int count = 0;
 
     while (getline(file, line) && count < 300)
     {
+        //Split value by comma
         stringstream ss(line);
+        //Store comma separated values in values array (there's 18 values per row)
         string values[18], token;
         int i = 0;
         while (getline(ss, token, ',') && i < 18)
