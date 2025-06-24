@@ -1,6 +1,7 @@
 #include "TransactionArray.cpp"
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 int main()
 {
@@ -57,5 +58,9 @@ int main()
     }
     file.close();
     cout << "Loaded " << count << " transactions into array" << endl;
+    arrStore.sortByLocation();
     arrStore.printAll();
+    cout << "Exit?: ";
+    int exit;
+    cin >> exit;
 }

@@ -1,7 +1,8 @@
 const int MAX_SIZE = 300;
 using namespace std;
-#include "Transaction.h"
+// #include "Transaction.h"
 #include <iostream>
+#include "utils/MergeSort.cpp"
 
 class TransactionArray
 {
@@ -32,10 +33,10 @@ public:
         return size;
     }
     // sorting
-    // void sortByLocation()
-    // {
-    //     mergeSort(data)
-    // }
+    void sortByLocation()
+    {
+        mergeSort(data, 0, size - 1);
+    }
     void printAll()
     {
         for (int i = 0; i < size; ++i)
