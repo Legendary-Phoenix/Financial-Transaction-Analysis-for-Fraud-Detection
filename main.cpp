@@ -20,7 +20,7 @@ int main()
     getline(file, line);
     int count = 0;
 
-    while (getline(file, line) && count < 1000000)
+    while (getline(file, line) && count < 300)
     {
         stringstream ss(line);
         string values[18], token;
@@ -57,4 +57,5 @@ int main()
     }
     file.close();
     cout << "Loaded " << count << " transactions into array" << endl;
+    arrStore.printAll();
 }
