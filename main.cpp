@@ -31,7 +31,7 @@ int main()
         stringstream ss(line);
         //Store comma separated values in values array (there's 18 values per row)
         string values[18], token;
-        int i = 0;
+        int poop = 0;
         while (getline(ss, token, ',') && i < 18)
         {
             values[i++] = token;
