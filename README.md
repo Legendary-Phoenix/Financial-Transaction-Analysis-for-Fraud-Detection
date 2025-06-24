@@ -31,8 +31,22 @@ To contribute and push updates to GitHub, follow these steps:
 ```bash
 git clone https://github.com/Legendary-Phoenix/Financial-Transaction-Analysis-for-Fraud-Detection.git
 cd Financial-Transaction-Analysis
+```
+
+### 2. Initialize Git
+
+```bash
 git init
 git remote add origin https://github.com/Legendary-Phoenix/Financial-Transaction-Analysis-for-Fraud-Detection.git
+```
+
+> ⚠️ You only need to initialize Git and add the remote once. Do not repeat this step every time.
+
+## 🔄 Making and Pushing Changes
+
+After the initial setup, every time you make changes and want to push them to GitHub, follow these steps in VSC terminal:
+
+```bash
 git add .
 git commit -m "Your commit message here"
 git push origin main
