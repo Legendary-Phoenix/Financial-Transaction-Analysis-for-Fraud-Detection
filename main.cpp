@@ -28,6 +28,7 @@ int main()
     {
         // Split value by comma
         stringstream ss(line);
+
         // Store comma separated values in values array (there's 18 values per row)
         string values[18], token;
         int i = 0;
@@ -36,16 +37,19 @@ int main()
             values[i++] = token;
         }
 
+        //If the row contained 18 values/columns
         if (i == 18)
         {
             try
             {
+                //Try converting these values to doubles from strings (stod()). If they are empty then impute values with 0.0
                 double amount = values[4].empty() ? 0.0 : stod(values[4]);
                 double tsl = values[11].empty() ? 0.0 : stod(values[11]);
                 double sdev = values[12].empty() ? 0.0 : stod(values[12]);
                 double vel = values[13].empty() ? 0.0 : stod(values[13]);
                 double geo = values[14].empty() ? 0.0 : stod(values[14]);
 
+                //Create Transaction object
                 Transaction t(
                     values[0], values[1], values[2], values[3], amount,
                     values[5], values[6], values[7], values[8], values[9] == "TRUE",
@@ -54,6 +58,7 @@ int main()
                 arrStore.add(t);
                 count++;
             }
+            //If value could not be converted
             catch (const std::exception &e)
             {
                 cerr << "⚠️ Error on line " << count + 1 << ": " << e.what() << endl;
@@ -61,10 +66,22 @@ int main()
             }
         }
     }
+    //Close file once done reading
     file.close();
     cout << "Loaded " << count << " transactions into array" << endl;
+    
+    //Apply sorting algorithm to array
     arrStore.sortByLocation();
-    arrStore.printAll();
+    //Print values to terminal for checking
+    //arrStore.printAll();
+
+    arrStore.sortByTransactionType();
+    string targetType = "withdrawal";
+    TransactionArray arrTransaction = arrStore.binarySearchByType(targetType);
+
+    arrTransaction.printAll();
+
+    //Exit logic not fleshed out yet
     cout << "Exit?: ";
     int exit;
     cin >> exit;
