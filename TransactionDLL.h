@@ -1,7 +1,6 @@
 #ifndef TRANSACTION_DLL_H
 #define TRANSACTION_DLL_H
 #include "Transaction.h"
-
 using namespace std;
 
 #include <string>
@@ -28,6 +27,8 @@ class TransactionDLL {
         void sortByLocation(); //IMPLEMENTING MERGE SORT OR BUBBLE SORT
         void searchByTrancsactionType(const string& type);
         void displayByPaymentChannel(const string& channel);
+        void displayAllByPaymentChannel();
+        void exportToJson(const string& filename, const string& filterChannel);
         void clear();
 };
 
