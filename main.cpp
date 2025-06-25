@@ -1,16 +1,20 @@
-#include "TransactionArray.cpp"
+#include "TransactionArray.h"
 #include "TransactionDLL.h"
+#include "loaders.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include "nlohman/json.hpp"
+#include "json.hpp"
 #include <string>
 #include <set>
 #include <iomanip>
 using namespace std;
-using json = nlohman::json;
+using json = nlohmann::json;
 
 void exportToJson(TransactionDLL& dll, const string& filename, const string& filterChannel){
+    json j;
+    Node* current = dll.getHead();
+
     while (current){
         if(current -> data.payment_channel == filterChannel){
             j.push_back({
@@ -123,7 +127,7 @@ int main()
         arrStore.printAll();
         cout << "Exit?: ";
         int exit;
-        cin >> exit;
+        cin >> exit; 
     }else if (choice == 2){
         TransactionDLL dllStore;
         loadDataIntoDLL(dllStore, filename);
@@ -141,7 +145,7 @@ int main()
             cin.ignore();
             switch (option){
                 case 1:
-                    dllStore.displayAllChannels();
+                    dllStore.displayAllByPaymentChannel();
                     break;
                 case 2:
                     dllStore.sortByLocation();
@@ -150,8 +154,8 @@ int main()
                 case 3:{
                     string type;
                     cout << "Enter payment channel to export: ";
-                    getline(cin, channel);
-                    exportToJson(dllStore, "exported_data.json", channel);
+                    getline(cin, type);
+                    exportToJson(dllStore, "exported_data.json", type);
                     break;
                 }
                 case 4: {
@@ -171,5 +175,7 @@ int main()
     }else{
         cout << "Invalid Choice" << endl;
     }
+
+    return 0;
     
 }

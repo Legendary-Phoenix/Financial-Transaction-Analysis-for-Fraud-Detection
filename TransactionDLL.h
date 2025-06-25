@@ -5,7 +5,7 @@ using namespace std;
 
 #include <string>
 // DEFINING TRANSACTION STRUCT SEPARATELY
-#include "Transaction.h"
+#include <unordered_set>
 
 struct Node {
     Transaction data;
@@ -25,11 +25,13 @@ class TransactionDLL {
         void add(Transaction t);
         void printAll();
         void sortByLocation(); //IMPLEMENTING MERGE SORT OR BUBBLE SORT
-        void searchByTrancsactionType(const string& type);
+        void searchByTransactionType(const string& type);
         void displayByPaymentChannel(const string& channel);
         void displayAllByPaymentChannel();
         void exportToJson(const string& filename, const string& filterChannel);
         void clear();
+
+        Node* getHead() const;
 };
 
 #endif
