@@ -1,6 +1,7 @@
 #include "TransactionArray.h"
 #include "ChannelArray.h"
 #include "TransactionLinkedList.h"
+#include "utils/PrintHelper.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -22,6 +23,27 @@ int main()
     int structureChoice;
     cin >> structureChoice;
 
+    int loadChoice;
+    int maxToLoad;
+
+    cout << "Do you want to:\n";
+    cout << "1. Load all transaction data\n";
+    cout << "2. Load a specific number of transactions" << endl;
+    cin >> loadChoice;
+
+    if (loadChoice == 2)
+    {
+        do
+        {
+            cout << "Enter the number of transactions to load (minimum 1000):";
+            cin >> maxToLoad;
+            if (maxToLoad < 1000)
+            {
+                cout << "Minimum number of transactions to load is 1000.";
+            }
+        } while (maxToLoad < 1000);
+    }
+
     // Load from CSV
     ifstream file("data/financial_fraud_detection_dataset.csv");
     if (!file.is_open())
@@ -39,8 +61,12 @@ int main()
     // Loop till end of file reading row by row
     int count = 0;
 
-    while (getline(file, line) && count < 300)
+    while (getline(file, line))
     {
+        if (count >= maxToLoad && loadChoice == 2)
+        {
+            break;
+        }
         // Split value by comma
         stringstream ss(line);
         // Store comma separated values in values array (there's 18 values per row)
@@ -86,7 +112,14 @@ int main()
     }
     file.close();
 
-    cout << "Loaded " << count << " transactions into array" << endl;
+    if (structureChoice == 1)
+    {
+        cout << "Loaded " << count << " transactions into array" << endl;
+    }
+    else
+    {
+        cout << "Loaded " << count << " transactions into linked list" << endl;
+    }
 
     // Display payment channel options
     channelArr.printOptions();
@@ -114,33 +147,25 @@ int main()
     }
     cout << "Transaction data filtered by " << selectedChannel << endl;
 
+    // requesting user if need to print data.
+    // if yes, top 300 is printed
+    askAndPrintData(filtered, filteredList, structureChoice);
+
     // Main submenu
     int option;
     do
     {
         cout << "\n---Menu---\n";
-        cout << "1. Print filtered transactions\n";
-        cout << "2. Sort by location(ascending)\n";
-        cout << "3. Search by transaction type\n";
-        cout << "4. Export to JSON\n";
-        cout << "5. Exit\n";
+        cout << "1. Sort by location(ascending)\n";
+        cout << "2. Search by transaction type\n";
+        cout << "3. Export to JSON\n";
+        cout << "4. Exit\n";
         cout << "Choose an option:";
         cin >> option;
 
         switch (option)
         {
         case 1:
-            cout << "\n---Filtered Transactions---\n";
-            if (structureChoice == 1)
-            {
-                filtered.printAll(); // consider printing based on custom amount
-            }
-            else
-            {
-                filteredList.printAll();
-            }
-            break;
-        case 2:
             cout << "Sorting transaction data by location in ascending order...\n"
                  << endl;
             if (structureChoice == 1)
@@ -152,25 +177,35 @@ int main()
                 // filter method for linkedlist
             }
             cout << "Transaction data sorted by location" << endl;
-            // consider printing based on custom amount
+
+            askAndPrintData(filtered, filteredList, structureChoice);
             break;
-        case 3:
+        case 2:
         {
             string type;
-            // print search types and implement searching
-            break;
-        }
-        case 4:
             if (structureChoice == 1)
             {
-                // export filtered(array)
+                // search method for array
             }
             else
             {
-                // export filteredList (linked list)
+                // search method for linked list
+            }
+            askAndPrintData(filtered, filteredList, structureChoice);
+            break;
+        }
+        case 3:
+            cout << "Exporting transaction data...";
+            if (structureChoice == 1)
+            {
+                filtered.exportToJSON("export/array.json");
+            }
+            else
+            {
+                filteredList.exportToJSON("export/linked_list.json");
             }
             break;
-        case 5:
+        case 4:
             cout << "Exiting...\n";
             break;
         default:
@@ -178,7 +213,7 @@ int main()
                  << endl;
         }
 
-    } while (option != 5);
+    } while (option != 4);
 
     return 0;
 }

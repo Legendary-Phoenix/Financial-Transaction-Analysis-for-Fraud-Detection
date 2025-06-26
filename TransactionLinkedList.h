@@ -1,8 +1,11 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include "TransactionNode.h"
+#include "libs/json.hpp"
 using namespace std;
+using json = nlohmann::json;
 
 class TransactionLinkedList
 {
@@ -41,18 +44,73 @@ public:
         return size;
     }
 
-    void printAll() const
+    void exportToJSON(const string &filename) const
     {
+        json j_array = json::array();
+
         TransactionNode *current = head;
         while (current != nullptr)
         {
+            const Transaction &t = current->data;
+
+            json j = {
+                {"transaction_id", t.transaction_id},
+                {"timestamp", t.timestamp},
+                {"sender_account", t.sender_account},
+                {"receiver_account", t.receiver_account},
+                {"amount", t.amount},
+                {"transaction_type", t.transaction_type},
+                {"merchant_category", t.merchant_category},
+                {"location", t.location},
+                {"device_used", t.device_used},
+                {"is_fraud", t.is_fraud},
+                {"fraud_type", t.fraud_type},
+                {"time_since_last_transaction", t.time_since_last_transaction},
+                {"spending_deviation_score", t.spending_deviation_score},
+                {"velocity_score", t.velocity_score},
+                {"geo_anomaly_score", t.geo_anomaly_score},
+                {"payment_channel", t.payment_channel},
+                {"ip_address", t.ip_address},
+                {"device_hash", t.device_hash}};
+
+            j_array.push_back(j);
+            current = current->next;
+        }
+
+        ofstream file(filename);
+        if (file.is_open())
+        {
+            file << j_array.dump(4);
+            file.close();
+            cout << "Data exported to JSON file" << endl;
+        }
+        else
+        {
+            cerr << "Failed to open " << filename << "\n";
+        }
+    }
+
+    void printAll() const
+    {
+        TransactionNode *current = head;
+        int count = 0;
+        while (current != nullptr && count < 300)
+        {
+
             cout
-                << current->data.transaction_id << "\n"
-                << current->data.payment_channel << "\n"
-                << current->data.location << "\n"
+                << "Transaction ID: " << current->data.transaction_id << "\n"
+                << "Payment Channel: " << current->data.payment_channel << "\n"
+                << "Location: " << current->data.location << "\n"
+                << "Timestamp: " << current->data.timestamp << "\n"
+                << "Sender:" << current->data.sender_account << "\n"
+                << "Receiver:" << current->data.receiver_account << "\n"
+                << "Amount: $" << current->data.amount << "\n"
+                << "Type: " << current->data.transaction_type << "\n"
+                << "Merchant Category: " << current->data.merchant_category << "\n"
                 << "----------------------------------\n"
                 << endl;
             current = current->next;
+            count++;
         }
     }
 
