@@ -1,3 +1,4 @@
+#pragma once
 #include "../Transaction.h"
 
 void merge(Transaction *arr, int left, int mid, int right)
