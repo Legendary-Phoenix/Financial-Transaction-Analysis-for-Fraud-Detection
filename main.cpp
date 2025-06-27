@@ -2,6 +2,7 @@
 #include "ChannelArray.h"
 #include "TransactionLinkedList.h"
 #include "utils/PrintHelper.h"
+#include "utils/MeasureTime.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -14,7 +15,7 @@ int main()
     TransactionArray filtered;
     ChannelArray channelArr;
     TransactionLinkedList list;
-    TransactionLinkedList filteredList;
+    TransactionLinkedList *filteredList;
 
     cout << "===Financial Transaction Analysis for Fraud Detection===\n";
     cout << "Choose data structure:\n";
@@ -170,13 +171,13 @@ int main()
                  << endl;
             if (structureChoice == 1)
             {
-                filtered.sortByLocation();
+                measureAndReport("Merge sort", [&]()
+                                 { filtered.sortByLocation(); });
             }
             else
             {
-                // filter method for linkedlist
+                // sort method for linkedlist (place in measureAndReport)
             }
-            cout << "Transaction data sorted by location" << endl;
 
             askAndPrintData(filtered, filteredList, structureChoice);
             break;
@@ -185,11 +186,11 @@ int main()
             string type;
             if (structureChoice == 1)
             {
-                // search method for array
+                // search method for array (place in measureAndReport)
             }
             else
             {
-                // search method for linked list
+                // search method for linked list (place in measureAndReport)
             }
             askAndPrintData(filtered, filteredList, structureChoice);
             break;
@@ -202,7 +203,7 @@ int main()
             }
             else
             {
-                filteredList.exportToJSON("export/linked_list.json");
+                filteredList->exportToJSON("export/linked_list.json");
             }
             break;
         case 4:

@@ -4,7 +4,7 @@
 #include "../TransactionLinkedList.h"
 #include <iostream>
 
-void askAndPrintData(const TransactionArray &array, const TransactionLinkedList &list, int structureChoice)
+void askAndPrintData(const TransactionArray &array, const TransactionLinkedList *list, int structureChoice)
 {
     std::cout << "\nDo you want to print the top 300 of the transaction data?\n";
     std::cout << "Enter 'Y' for yes, anything else for no: ";
@@ -22,7 +22,7 @@ void askAndPrintData(const TransactionArray &array, const TransactionLinkedList 
         else
         {
 
-            list.printAll();
+            list->printAll();
         }
     }
 }

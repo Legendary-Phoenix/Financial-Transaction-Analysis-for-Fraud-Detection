@@ -20,7 +20,7 @@ public:
         size = 0;
     }
 
-    void add(Transaction t)
+    void add(const Transaction t)
     {
         TransactionNode *newNode = new TransactionNode(t);
         if (head == nullptr)
@@ -98,6 +98,7 @@ public:
         {
 
             cout
+                << "Transaction #" << count + 1 << ":\n"
                 << "Transaction ID: " << current->data.transaction_id << "\n"
                 << "Payment Channel: " << current->data.payment_channel << "\n"
                 << "Location: " << current->data.location << "\n"
@@ -119,6 +120,23 @@ public:
         return head;
     }
 
+    TransactionLinkedList *filterByPaymentChannel(const string &channel)
+    {
+        TransactionLinkedList *result = new TransactionLinkedList();
+        TransactionNode *current = head;
+
+        while (current != nullptr)
+        {
+            if (current->data.payment_channel == channel)
+            {
+                result->add(current->data);
+            }
+            current = current->next;
+        }
+
+        return result;
+    }
+
     ~TransactionLinkedList()
     {
         TransactionNode *current = head;
@@ -128,22 +146,5 @@ public:
             delete current;
             current = next;
         }
-    }
-
-    TransactionLinkedList filterByPaymentChannel(string &channel)
-    {
-        TransactionLinkedList result;
-        TransactionNode *current = head;
-
-        while (current != nullptr)
-        {
-            if (current->data.payment_channel == channel)
-            {
-                result.add(current->data);
-            }
-            current = current->next;
-        }
-
-        return result;
     }
 };
