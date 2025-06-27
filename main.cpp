@@ -6,8 +6,12 @@
 #include <iostream>
 #include "json.hpp"
 #include <string>
+<<<<<<< Updated upstream
 #include <set>
 #include <iomanip>
+=======
+#include <filesystem>
+>>>>>>> Stashed changes
 using namespace std;
 using json = nlohmann::json;
 
@@ -175,6 +179,150 @@ int main()
     }else{
         cout << "Invalid Choice" << endl;
     }
+<<<<<<< Updated upstream
+=======
+    else
+    {
+        cout << "Loaded " << count << " transactions into linked list" << endl;
+    }
+
+    // Display payment channel options
+    channelArr.printOptions();
+    cout << "Select a payment channel (1-" << channelArr.getSize() << "): ";
+    int filterChoice;
+    cin >> filterChoice;
+    string selectedChannel = channelArr.get(filterChoice - 1);
+    cout << "Filtering transaction data by " << selectedChannel << "..." << endl;
+
+    // filter for array
+    if (structureChoice == 1)
+    {
+        for (int i = 0; i < arrStore.getSize(); ++i)
+        {
+            Transaction &t = arrStore.get(i);
+            if (t.payment_channel == selectedChannel)
+            {
+                filtered.add(t);
+            }
+        }
+    }
+    else
+    {
+        filteredList = list.filterByPaymentChannel(selectedChannel);
+    }
+    cout << "Transaction data filtered by " << selectedChannel << endl;
+
+    // requesting user if need to print data.
+    // if yes, top 300 is printed
+    askAndPrintData(filtered, filteredList, structureChoice);
+
+    // Main submenu
+    int option;
+    int sortingLink;
+    bool check = true;
+    do
+    {
+        cout << "\n---Menu---\n";
+        cout << "1. Sort by location(ascending)\n";
+        cout << "2. Search by transaction type\n";
+        cout << "3. Export to JSON\n";
+        cout << "4. Exit\n";
+        cout << "Choose an option:";
+        cin >> option;
+
+        switch (option)
+        {
+        case 1:
+        {
+            cout << "Sorting transaction data by location in ascending order...\n"
+                 << endl;
+            if (structureChoice == 1)
+            {
+                measureAndReport("Merge sort", [&]()
+                                 { filtered.sortByLocation(); });
+            }
+            else
+            {
+                do
+                {
+                    cout << "1. Bubble Sort" << endl;
+                    cout << "2. Insertion Sort" << endl;
+                    cout << "Choose what algorithm of sorting want to use: ";
+                    cin >> sortingLink;
+
+                    if (sortingLink == 1)
+                    {
+                        // sort method for linkedlist (place in measureAndReport)
+                        measureAndReport("Bubble sort (Linked List)", [&]()
+                        {filteredList -> sortByLocation();});
+                        break;
+                    }else if (sortingLink == 2)
+                    {
+                        measureAndReport("Insertion sort (Linked List)", [&]()
+                        {
+                            filteredList -> insertionSortByLocation();
+                        });
+                        break;
+                    }else
+                    {
+                        cout << "Wrong option. Please choose again" << endl;
+                        check = false;
+                    }
+                }while (!check);
+                
+            }
+
+            askAndPrintData(filtered, filteredList, structureChoice);
+            break;
+        }
+        case 2:
+        {
+            string type;
+            if (structureChoice == 1)
+            {
+                // search method for array (place in measureAndReport)
+            }
+            else
+            {
+                //
+            }
+            askAndPrintData(filtered, filteredList, structureChoice);
+            break;
+        }
+        case 3:
+        {
+            cout << "Exporting transaction data...";
+            string baseName = (structureChoice == 1) ? "array" : "linked_list";
+            string folder = "export/";
+            string ext = ".json";
+            string fullPath = folder + baseName + ext;
+
+            int counter = 1;
+            while (filesystem::exists(fullPath))
+            {
+                fullPath = folder + baseName + "_" + to_string(counter++) + ext;
+            }
+
+            if (structureChoice == 1)
+            {
+                filtered.exportToJSON(fullPath);
+            }
+            else
+            {
+                filteredList->exportToJSON(fullPath);
+            }
+            break;
+        }
+        case 4:
+            cout << "Exiting...\n";
+            break;
+        default:
+            cout << "Invalid option. Try again\n"
+                 << endl;
+        }
+
+    } while (option != 4);
+>>>>>>> Stashed changes
 
     return 0;
     
