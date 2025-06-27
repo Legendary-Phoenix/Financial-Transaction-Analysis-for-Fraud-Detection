@@ -154,6 +154,8 @@ int main()
 
     // Main submenu
     int option;
+    int sortingLink;
+    bool check = true;
     do
     {
         cout << "\n---Menu---\n";
@@ -167,6 +169,7 @@ int main()
         switch (option)
         {
         case 1:
+        {
             cout << "Sorting transaction data by location in ascending order...\n"
                  << endl;
             if (structureChoice == 1)
@@ -176,11 +179,38 @@ int main()
             }
             else
             {
-                // sort method for linkedlist (place in measureAndReport)
+                do
+                {
+                    cout << "1. Bubble Sort" << endl;
+                    cout << "2. Insertion Sort" << endl;
+                    cout << "Choose what algorithm of sorting want to use: ";
+                    cin >> sortingLink;
+
+                    if (sortingLink == 1)
+                    {
+                        // sort method for linkedlist (place in measureAndReport)
+                        measureAndReport("Bubble sort (Linked List)", [&]()
+                        {filteredList -> sortByLocation();});
+                        break;
+                    }else if (sortingLink == 2)
+                    {
+                        measureAndReport("Insertion sort (Linked List)", [&]()
+                        {
+                            filteredList -> insertionSortByLocation();
+                        });
+                        break;
+                    }else
+                    {
+                        cout << "Wrong option. Please choose again" << endl;
+                        check = false;
+                    }
+                }while (!check);
+                
             }
 
             askAndPrintData(filtered, filteredList, structureChoice);
             break;
+        }
         case 2:
         {
             string type;
@@ -190,22 +220,35 @@ int main()
             }
             else
             {
-                // search method for linked list (place in measureAndReport)
+                //
             }
             askAndPrintData(filtered, filteredList, structureChoice);
             break;
         }
         case 3:
+        {
             cout << "Exporting transaction data...";
+            string baseName = (structureChoice == 1) ? "array" : "linked_list";
+            string folder = "export/";
+            string ext = ".json";
+            string fullPath = folder + baseName + ext;
+
+            int counter = 1;
+            while(filesystem::exists(fullPath))
+            {
+                fullPath = folder + baseName + "_" + to_string(counter++) + ext;
+            }
+            
             if (structureChoice == 1)
             {
-                filtered.exportToJSON("export/array.json");
+                filtered.exportToJSON(fullPath);
             }
             else
             {
-                filteredList->exportToJSON("export/linked_list.json");
+                filteredList->exportToJSON(fullPath);
             }
             break;
+        }
         case 4:
             cout << "Exiting...\n";
             break;

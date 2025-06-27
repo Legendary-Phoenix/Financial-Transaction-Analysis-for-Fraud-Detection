@@ -147,4 +147,64 @@ public:
             current = next;
         }
     }
+
+    // SORT LINKED LIST USING BUBBLE SORT BY LOCATION
+    void sortByLocation()
+    {
+        if (!head || !head -> next)
+        {
+            return;
+        }
+
+        bool swapped;
+        do
+        {
+            swapped = false;
+            TransactionNode *current = head;
+            while (current -> next != nullptr)
+            {
+                if (current -> data.location > current -> next -> data.location)
+                {
+                    swap(current -> data, current -> next -> data);
+                    swapped = true;
+                }
+                current = current -> next;
+            }
+        }while (swapped);
+    }
+
+     // SORTING USING INSERTION SORT LINKED LIST BY LOCATION
+    void insertionSortByLocation()
+    {
+        if (!head || !head->next)
+        {
+            return;
+        }
+
+        TransactionNode *sorted = nullptr;
+        TransactionNode *current = head;
+
+        while (current != nullptr)
+        {
+            TransactionNode *next = current->next;
+            if (!sorted || current->data.location < sorted->data.location)
+            {
+                current->next = sorted;
+                sorted = current;
+            }
+            else
+            {
+                TransactionNode *temp = sorted;
+                while (temp->next && temp->next->data.location < current->data.location)
+                {
+                    temp = temp->next;
+                }
+                current->next = temp->next;
+                temp->next = current;
+            }
+            current = next;
+        }
+
+        head = sorted;
+    }
 };
