@@ -4,10 +4,10 @@ using namespace std;
 #include <string>
 #include <iostream>
 
-class ChannelArray
+class TransactionTypeArray
 {
 private:
-    string *channels;
+    string *types;
     int size;
     int capacity;
 
@@ -17,25 +17,25 @@ private:
         string *newChannels = new string[newCapacity];
         for (int i = 0; i < size; ++i)
         {
-            newChannels[i] = channels[i];
+            newChannels[i] = types[i];
         }
-        delete[] channels;
-        channels = newChannels;
+        delete[] types;
+        types = newChannels;
         capacity = newCapacity;
     }
 
 public:
-    ChannelArray()
+    TransactionTypeArray()
     {
         // initial capacity: 4
-        channels = new string[4];
+        types = new string[4];
         size = 0;
         capacity = 4;
     }
     bool contains(const string &val)
     {
         for (int i = 0; i < size; ++i)
-            if (channels[i] == val)
+            if (types[i] == val)
             {
                 return true;
             }
@@ -49,7 +49,7 @@ public:
             {
                 resize();
             }
-            channels[size++] = val;
+            types[size++] = val;
         }
     }
     void printOptions()
@@ -57,18 +57,18 @@ public:
         cout << "Available Payment Channels:\n"
              << endl;
         for (int i = 0; i < size; ++i)
-            cout << (i + 1) << ". " << channels[i] << "\n";
+            cout << (i + 1) << ". " << types[i] << "\n";
     }
     string get(int index)
     {
-        return (index >= 0 && index < size) ? channels[index] : "";
+        return (index >= 0 && index < size) ? types[index] : "";
     }
     int getSize()
     {
         return size;
     }
-    ~ChannelArray()
+    ~TransactionTypeArray()
     {
-        delete[] channels;
+        delete[] types;
     }
 };

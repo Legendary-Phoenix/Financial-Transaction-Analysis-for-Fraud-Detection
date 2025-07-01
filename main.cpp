@@ -13,7 +13,8 @@ int main()
 {
     TransactionArray arrStore;
     TransactionArray filtered;
-    ChannelArray channelArr;
+    TransactionTypeArray channelArr;
+    TransactionTypeArray typeArr;
     TransactionLinkedList list;
     TransactionLinkedList *filteredList;
 
@@ -191,6 +192,18 @@ int main()
             else
             {
                 // search method for linked list (place in measureAndReport)
+
+                // showaskTransactionType() needs transactionTypeArray
+                // Display payment channel options
+                typeArr.printOptions();
+                cout << "Select a transaction type (1-" << typeArr.getSize() << "): ";
+                int searchChoice;
+                cin >> searchChoice;
+                string selectedType = typeArr.get(searchChoice - 1);
+                cout << "Searching transaction data by " << selectedType << "..." << endl;
+                
+                measureAndReport("Search", [&]()
+                                 { list.searchByTransactionType(selectedType); });
             }
             askAndPrintData(filtered, filteredList, structureChoice);
             break;

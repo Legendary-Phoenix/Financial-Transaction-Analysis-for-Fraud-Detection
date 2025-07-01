@@ -147,4 +147,21 @@ public:
             current = next;
         }
     }
+
+    TransactionLinkedList *searchByTransactionType(const string &type)
+    {
+        TransactionLinkedList *result = new TransactionLinkedList();
+        TransactionNode *current = head;
+
+        while (current != nullptr)
+        {
+            if (current->data.transaction_type == type)
+            {
+                result->add(current->data);
+            }
+            current = current->next;
+        }
+
+        return result;
+    }
 };
