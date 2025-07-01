@@ -7,13 +7,14 @@
 #include <sstream>
 #include <iostream>
 #include <string>
+#include "TransactionTypeArray.h"
 using namespace std;
 
 int main()
 {
     TransactionArray arrStore;
     TransactionArray filtered;
-    TransactionTypeArray channelArr;
+    ChannelArray channelArr;
     TransactionTypeArray typeArr;
     TransactionLinkedList list;
     TransactionLinkedList *filteredList;
@@ -103,6 +104,7 @@ int main()
                     list.add(t);
                 }
                 channelArr.add(t.payment_channel);
+                typeArr.add(t.transaction_type);
                 count++;
             }
             catch (const std::exception &e)
@@ -203,7 +205,7 @@ int main()
                 cout << "Searching transaction data by " << selectedType << "..." << endl;
                 
                 measureAndReport("Search", [&]()
-                                 { list.searchByTransactionType(selectedType); });
+                                 { filteredList = list.searchByTransactionType(selectedType); });
             }
             askAndPrintData(filtered, filteredList, structureChoice);
             break;
