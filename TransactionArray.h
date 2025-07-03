@@ -6,6 +6,7 @@ using namespace std;
 #include <iostream>
 #include <fstream>
 #include "utils/MergeSort.h"
+#include "utils/MeasureTime.h"
 
 class TransactionArray
 {
@@ -78,69 +79,56 @@ public:
         delete[] data;
     }
     // sorting
-    void sortByLocation()
+    void mergeSortByLocation()
     {
         mergeSort(data, 0, size - 1);
     }
 
-    // need to sort array by transaction type before doing binary search
-    // Compare transactions based on transaction_type
-    void sortByTransactionType()
+    void bubbleSortByLocation()
     {
         for (int i = 0; i < size - 1; ++i)
         {
-            for (int j = i + 1; j < size; ++j)
+            for (int j = 0; j < size - i - 1; ++j)
             {
-                if (data[i].transaction_type > data[j].transaction_type)
+                if (data[j].location > data[j + 1].location)
                 {
-                    std::swap(data[i], data[j]);
+                    // swap transactions
+                    Transaction temp = data[j];
+                    data[j] = data[j + 1];
+                    data[j + 1] = temp;
                 }
             }
         }
     }
 
-    TransactionArray binarySearchByType(const std::string &tType)
+    void chooseAndSortByLocation()
     {
-        TransactionArray results;
-
-        int left = 0, right = size - 1;
-
-        // Find the first match
-        while (left <= right)
+        int sortChoice;
+        do
         {
-            int mid = left + (right - left) / 2;
+            cout << "Choose a sorting method:\n";
+            cout << "1. Merge Sort\n";
+            cout << "2. Bubble Sort\n";
+            cout << "Enter choice: ";
+            cin >> sortChoice;
 
-            if (data[mid].transaction_type == tType)
+            if (sortChoice != 1 && sortChoice != 2)
             {
-                // Found one match, now collect all matches
-                // Move left
-                int l = mid;
-                while (l >= 0 && data[l].transaction_type == tType)
-                {
-                    results.add(data[l]);
-                    --l;
-                }
-                // Move right
-                int r = mid + 1;
-                while (r < size && data[r].transaction_type == tType)
-                {
-                    results.add(data[r]);
-                    ++r;
-                }
-                results.add(data[mid]); // Add the original match
-                break;
+                cout << "Invalid sorting option.\n";
             }
-            else if (data[mid].transaction_type < tType)
-            {
-                left = mid + 1;
-            }
-            else
-            {
-                right = mid - 1;
-            }
+
+        } while (sortChoice != 1 && sortChoice != 2);
+        cout << "\nSorting transaction data by location in ascending order..." << endl;
+        if (sortChoice == 1)
+        {
+            measureAndReport("Merge sort", [&]()
+                             { mergeSortByLocation(); });
         }
-
-        return results;
+        else
+        {
+            measureAndReport("Bubble sort", [&]()
+                             { bubbleSortByLocation(); });
+        }
     }
 
     void exportToJSON(const string &filename) const

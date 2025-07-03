@@ -176,8 +176,7 @@ int main()
                  << endl;
             if (structureChoice == 1)
             {
-                measureAndReport("Merge sort", [&]()
-                                 { filtered.sortByLocation(); });
+                filtered.chooseAndSortByLocation();
             }
             else
             {
@@ -191,18 +190,7 @@ int main()
             string type;
             if (structureChoice == 1)
             {
-                string selectedType = transactionTypeArr.getUserChoice();
-                filtered.sortByTransactionType();
-                // string targetType = "withdrawal";
-                auto start = high_resolution_clock::now();
-                //  overwrite filtered array with the search results
-                //  filtered = measureAndReturn("Binary search", [&]()
-                //                              { return filtered.binarySearchByType(targetType); });
-                filtered = filtered.binarySearchByType(selectedType);
-                auto end = high_resolution_clock::now();
-                auto duration = duration_cast<milliseconds>(end - start);
-                cout << "Binary Search" << " completed in " << duration.count() << "ms\n";
-                cout << "Filtered size after search: " << filtered.getSize() << endl;
+                // search method for array
             }
             else
             {
