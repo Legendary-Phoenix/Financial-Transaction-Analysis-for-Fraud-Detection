@@ -1,6 +1,7 @@
 #include "TransactionArray.h"
 #include "ChannelArray.h"
 #include "TransactionLinkedList.h"
+#include "TransactionTypeArray.h"
 #include "utils/PrintHelper.h"
 #include "utils/MeasureTime.h"
 #include <fstream>
@@ -14,6 +15,7 @@ int main()
     TransactionArray arrStore;
     TransactionArray filtered;
     ChannelArray channelArr;
+    TransactionTypeArray transactionTypeArr;
     TransactionLinkedList list;
     TransactionLinkedList *filteredList;
 
@@ -102,11 +104,12 @@ int main()
                     list.add(t);
                 }
                 channelArr.add(t.payment_channel);
+                transactionTypeArr.add(t.transaction_type);
                 count++;
             }
             catch (const std::exception &e)
             {
-                cerr << "⚠️ Error on line " << count + 1 << ": " << e.what() << endl;
+                cerr << "Error on line " << count + 1 << ": " << e.what() << endl;
                 cerr << "Line: " << line << endl;
             }
         }
@@ -141,10 +144,12 @@ int main()
                 filtered.add(t);
             }
         }
+        cout << "Filtered size: " << filtered.getSize() << endl;
     }
     else
     {
         filteredList = list.filterByPaymentChannel(selectedChannel);
+        cout << "Filtered size: " << filteredList->getSize() << endl;
     }
     cout << "Transaction data filtered by " << selectedChannel << endl;
 
@@ -186,7 +191,18 @@ int main()
             string type;
             if (structureChoice == 1)
             {
-                // search method for array (place in measureAndReport)
+                string selectedType = transactionTypeArr.getUserChoice();
+                filtered.sortByTransactionType();
+                // string targetType = "withdrawal";
+                auto start = high_resolution_clock::now();
+                //  overwrite filtered array with the search results
+                //  filtered = measureAndReturn("Binary search", [&]()
+                //                              { return filtered.binarySearchByType(targetType); });
+                filtered = filtered.binarySearchByType(selectedType);
+                auto end = high_resolution_clock::now();
+                auto duration = duration_cast<milliseconds>(end - start);
+                cout << "Binary Search" << " completed in " << duration.count() << "ms\n";
+                cout << "Filtered size after search: " << filtered.getSize() << endl;
             }
             else
             {

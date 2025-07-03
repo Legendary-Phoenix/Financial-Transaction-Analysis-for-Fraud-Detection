@@ -36,6 +36,25 @@ public:
         size = 0;
         // cout << "Data Memory Address: " << "Data: " << data << endl;
     }
+
+    TransactionArray &operator=(const TransactionArray &other)
+    {
+        if (this == &other)
+            return *this; // Self-assignment check
+
+        delete[] data; // Free current data
+
+        capacity = other.capacity;
+        size = other.size;
+        data = new Transaction[capacity];
+        for (int i = 0; i < size; ++i)
+        {
+            data[i] = other.data[i];
+        }
+
+        return *this;
+    }
+
     void add(Transaction t)
     {
         if (size == capacity)
@@ -62,6 +81,66 @@ public:
     void sortByLocation()
     {
         mergeSort(data, 0, size - 1);
+    }
+
+    // need to sort array by transaction type before doing binary search
+    // Compare transactions based on transaction_type
+    void sortByTransactionType()
+    {
+        for (int i = 0; i < size - 1; ++i)
+        {
+            for (int j = i + 1; j < size; ++j)
+            {
+                if (data[i].transaction_type > data[j].transaction_type)
+                {
+                    std::swap(data[i], data[j]);
+                }
+            }
+        }
+    }
+
+    TransactionArray binarySearchByType(const std::string &tType)
+    {
+        TransactionArray results;
+
+        int left = 0, right = size - 1;
+
+        // Find the first match
+        while (left <= right)
+        {
+            int mid = left + (right - left) / 2;
+
+            if (data[mid].transaction_type == tType)
+            {
+                // Found one match, now collect all matches
+                // Move left
+                int l = mid;
+                while (l >= 0 && data[l].transaction_type == tType)
+                {
+                    results.add(data[l]);
+                    --l;
+                }
+                // Move right
+                int r = mid + 1;
+                while (r < size && data[r].transaction_type == tType)
+                {
+                    results.add(data[r]);
+                    ++r;
+                }
+                results.add(data[mid]); // Add the original match
+                break;
+            }
+            else if (data[mid].transaction_type < tType)
+            {
+                left = mid + 1;
+            }
+            else
+            {
+                right = mid - 1;
+            }
+        }
+
+        return results;
     }
 
     void exportToJSON(const string &filename) const
@@ -109,7 +188,8 @@ public:
 
     void printAll() const
     {
-        for (int i = 0; i < 300; ++i)
+        int count = std::min(size, 300);
+        for (int i = 0; i < count; ++i)
         {
             printTransaction(data[i], i);
         }
