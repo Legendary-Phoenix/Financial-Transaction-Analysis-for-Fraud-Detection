@@ -6,6 +6,7 @@ using namespace std;
 #include <iostream>
 #include <fstream>
 #include "utils/MergeSort.h"
+#include "utils/MeasureTime.h"
 
 class TransactionArray
 {
@@ -36,6 +37,25 @@ public:
         size = 0;
         // cout << "Data Memory Address: " << "Data: " << data << endl;
     }
+
+    TransactionArray &operator=(const TransactionArray &other)
+    {
+        if (this == &other)
+            return *this; // Self-assignment check
+
+        delete[] data; // Free current data
+
+        capacity = other.capacity;
+        size = other.size;
+        data = new Transaction[capacity];
+        for (int i = 0; i < size; ++i)
+        {
+            data[i] = other.data[i];
+        }
+
+        return *this;
+    }
+
     void add(Transaction t)
     {
         if (size == capacity)
@@ -59,9 +79,56 @@ public:
         delete[] data;
     }
     // sorting
-    void sortByLocation()
+    void mergeSortByLocation()
     {
         mergeSort(data, 0, size - 1);
+    }
+
+    void bubbleSortByLocation()
+    {
+        for (int i = 0; i < size - 1; ++i)
+        {
+            for (int j = 0; j < size - i - 1; ++j)
+            {
+                if (data[j].location > data[j + 1].location)
+                {
+                    // swap transactions
+                    Transaction temp = data[j];
+                    data[j] = data[j + 1];
+                    data[j + 1] = temp;
+                }
+            }
+        }
+    }
+
+    void chooseAndSortByLocation()
+    {
+        int sortChoice;
+        do
+        {
+            cout << "Choose a sorting method:\n";
+            cout << "1. Merge Sort\n";
+            cout << "2. Bubble Sort\n";
+            cout << "Enter choice: ";
+            cin >> sortChoice;
+
+            if (sortChoice != 1 && sortChoice != 2)
+            {
+                cout << "Invalid sorting option.\n";
+            }
+
+        } while (sortChoice != 1 && sortChoice != 2);
+        cout << "\nSorting transaction data by location in ascending order..." << endl;
+        if (sortChoice == 1)
+        {
+            measureAndReport("Merge sort", [&]()
+                             { mergeSortByLocation(); });
+        }
+        else
+        {
+            measureAndReport("Bubble sort", [&]()
+                             { bubbleSortByLocation(); });
+        }
     }
 
     void exportToJSON(const string &filename) const
@@ -109,7 +176,8 @@ public:
 
     void printAll() const
     {
-        for (int i = 0; i < 300; ++i)
+        int count = std::min(size, 300);
+        for (int i = 0; i < count; ++i)
         {
             printTransaction(data[i], i);
         }

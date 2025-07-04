@@ -1,6 +1,7 @@
 #include "TransactionArray.h"
 #include "ChannelArray.h"
 #include "TransactionLinkedList.h"
+#include "TransactionTypeArray.h"
 #include "utils/PrintHelper.h"
 #include "utils/MeasureTime.h"
 #include <fstream>
@@ -15,7 +16,7 @@ int main()
     TransactionArray arrStore;
     TransactionArray filtered;
     ChannelArray channelArr;
-    TransactionTypeArray typeArr;
+    TransactionTypeArray transactionTypeArr;
     TransactionLinkedList list;
     TransactionLinkedList *filteredList;
 
@@ -104,12 +105,12 @@ int main()
                     list.add(t);
                 }
                 channelArr.add(t.payment_channel);
-                typeArr.add(t.transaction_type);
+                transactionTypeArr.add(t.transaction_type);
                 count++;
             }
             catch (const std::exception &e)
             {
-                cerr << "⚠️ Error on line " << count + 1 << ": " << e.what() << endl;
+                cerr << "Error on line " << count + 1 << ": " << e.what() << endl;
                 cerr << "Line: " << line << endl;
             }
         }
@@ -144,10 +145,12 @@ int main()
                 filtered.add(t);
             }
         }
+        cout << "Filtered size: " << filtered.getSize() << endl;
     }
     else
     {
         filteredList = list.filterByPaymentChannel(selectedChannel);
+        cout << "Filtered size: " << filteredList->getSize() << endl;
     }
     cout << "Transaction data filtered by " << selectedChannel << endl;
 
@@ -174,8 +177,7 @@ int main()
                  << endl;
             if (structureChoice == 1)
             {
-                measureAndReport("Merge sort", [&]()
-                                 { filtered.sortByLocation(); });
+                filtered.chooseAndSortByLocation();
             }
             else
             {
@@ -189,7 +191,7 @@ int main()
             string type;
             if (structureChoice == 1)
             {
-                // search method for array (place in measureAndReport)
+                // search method for array
             }
             else
             {
@@ -197,11 +199,11 @@ int main()
 
                 // showaskTransactionType() needs transactionTypeArray
                 // Display payment channel options
-                typeArr.printOptions();
-                cout << "Select a transaction type (1-" << typeArr.getSize() << "): ";
+                transactionTypeArr.printOptions();
+                cout << "Select a transaction type (1-" << transactionTypeArr.getSize() << "): ";
                 int searchChoice;
                 cin >> searchChoice;
-                string selectedType = typeArr.get(searchChoice - 1);
+                string selectedType = transactionTypeArr.get(searchChoice - 1);
                 cout << "Searching transaction data by " << selectedType << "..." << endl;
                 
                 measureAndReport("Search", [&]()

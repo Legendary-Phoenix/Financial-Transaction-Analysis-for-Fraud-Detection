@@ -7,20 +7,20 @@ using namespace std;
 class TransactionTypeArray
 {
 private:
-    string *types;
+    string *data;
     int size;
     int capacity;
 
     void resize()
     {
         int newCapacity = capacity * 2;
-        string *newTypes = new string[newCapacity];
+        string *newData = new string[newCapacity];
         for (int i = 0; i < size; ++i)
         {
-            newTypes[i] = types[i];
+            newData[i] = data[i];
         }
-        delete[] types;
-        types = newTypes;
+        delete[] data;
+        data = newData;
         capacity = newCapacity;
     }
 
@@ -28,14 +28,14 @@ public:
     TransactionTypeArray()
     {
         // initial capacity: 4
-        types = new string[4];
+        data = new string[4];
         size = 0;
         capacity = 4;
     }
     bool contains(const string &val)
     {
         for (int i = 0; i < size; ++i)
-            if (types[i] == val)
+            if (data[i] == val)
             {
                 return true;
             }
@@ -49,19 +49,34 @@ public:
             {
                 resize();
             }
-            types[size++] = val;
+            data[size++] = val;
         }
     }
     void printOptions()
     {
-        cout << "Known Transaction Types:\n"
+        cout << "\nAvailable Transaction Types:\n"
              << endl;
         for (int i = 0; i < size; ++i)
-            cout << (i + 1) << ". " << types[i] << "\n";
+            cout << (i + 1) << ". " << data[i] << "\n";
     }
+
+    string getUserChoice()
+    {
+        printOptions();
+        int choice;
+        cout << "Enter your choice (1-" << size << "): ";
+        cin >> choice;
+        while (choice < 1 || choice > size)
+        {
+            cout << "Invalid choice. Try again: ";
+            cin >> choice;
+        }
+        return data[choice - 1];
+    }
+
     string get(int index)
     {
-        return (index >= 0 && index < size) ? types[index] : "";
+        return (index >= 0 && index < size) ? data[index] : "";
     }
     int getSize()
     {
@@ -69,6 +84,6 @@ public:
     }
     ~TransactionTypeArray()
     {
-        delete[] types;
+        delete[] data;
     }
 };
