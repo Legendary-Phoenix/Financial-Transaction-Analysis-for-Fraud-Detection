@@ -24,6 +24,14 @@ private:
         capacity = newCapacity;
     }
 
+    void printOptions()
+    {
+        cout << "\nAvailable Transaction Types:\n"
+             << endl;
+        for (int i = 0; i < size; ++i)
+            cout << (i + 1) << ". " << data[i] << "\n";
+    }
+
 public:
     TransactionTypeArray()
     {
@@ -51,13 +59,6 @@ public:
             }
             data[size++] = val;
         }
-    }
-    void printOptions()
-    {
-        cout << "\nAvailable Transaction Types:\n"
-             << endl;
-        for (int i = 0; i < size; ++i)
-            cout << (i + 1) << ". " << data[i] << "\n";
     }
 
     string getUserChoice()

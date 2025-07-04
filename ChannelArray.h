@@ -54,7 +54,7 @@ public:
     }
     void printOptions()
     {
-        cout << "Available Payment Channels:\n"
+        cout << "\nAvailable Payment Channels:\n"
              << endl;
         for (int i = 0; i < size; ++i)
             cout << (i + 1) << ". " << channels[i] << "\n";

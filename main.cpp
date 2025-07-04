@@ -19,20 +19,33 @@ int main()
     TransactionLinkedList list;
     TransactionLinkedList *filteredList;
 
-    cout << "===Financial Transaction Analysis for Fraud Detection===\n";
-    cout << "Choose data structure:\n";
-    cout << "1. Array\n";
-    cout << "2. Linked List\n";
     int structureChoice;
-    cin >> structureChoice;
+    cout << "===Financial Transaction Analysis for Fraud Detection===\n";
+    do
+    {
+        cout << "\nChoose data structure:\n";
+        cout << "1. Array\n";
+        cout << "2. Linked List\n";
+        cin >> structureChoice;
+        if (structureChoice != 1 && structureChoice != 2)
+        {
+            cout << "Invalid choice for data structure.\n";
+        }
+    } while (structureChoice != 1 && structureChoice != 2);
 
     int loadChoice;
     int maxToLoad;
-
-    cout << "Do you want to:\n";
-    cout << "1. Load all transaction data\n";
-    cout << "2. Load a specific number of transactions" << endl;
-    cin >> loadChoice;
+    do
+    {
+        cout << "\nDo you want to:\n";
+        cout << "1. Load all transaction data\n";
+        cout << "2. Load a specific number of transactions" << endl;
+        cin >> loadChoice;
+        if (loadChoice != 1 && loadChoice != 2)
+        {
+            cout << "Invalid choice.\n";
+        }
+    } while (loadChoice != 1 && loadChoice != 2);
 
     if (loadChoice == 2)
     {
@@ -42,7 +55,7 @@ int main()
             cin >> maxToLoad;
             if (maxToLoad < 1000)
             {
-                cout << "Minimum number of transactions to load is 1000.";
+                cout << "Minimum number of transactions to load is 1000.\n";
             }
         } while (maxToLoad < 1000);
     }
@@ -56,7 +69,7 @@ int main()
         return 1;
     }
 
-    cout << "Loading data..." << endl;
+    cout << "\nLoading data..." << endl;
     string line;
     // Read column headings and ignore it
     getline(file, line);
@@ -126,12 +139,22 @@ int main()
     }
 
     // Display payment channel options
-    channelArr.printOptions();
-    cout << "Select a payment channel (1-" << channelArr.getSize() << "): ";
-    int filterChoice;
-    cin >> filterChoice;
-    string selectedChannel = channelArr.get(filterChoice - 1);
-    cout << "Filtering transaction data by " << selectedChannel << "..." << endl;
+    string selectedChannel;
+    do
+    {
+        channelArr.printOptions();
+        cout << "Select a payment channel (1-" << channelArr.getSize() << "): ";
+        int filterChoice;
+        cin >> filterChoice;
+        selectedChannel = channelArr.get(filterChoice - 1);
+        if (selectedChannel == "")
+        {
+            cout << "Invalid payment channel option.\n"
+                 << endl;
+        }
+    } while (selectedChannel == "");
+
+    cout << "\nFiltering transaction data by " << selectedChannel << "..." << endl;
 
     // filter for array
     if (structureChoice == 1)
@@ -144,14 +167,22 @@ int main()
                 filtered.add(t);
             }
         }
-        cout << "Filtered size: " << filtered.getSize() << endl;
     }
     else
     {
         filteredList = list.filterByPaymentChannel(selectedChannel);
-        cout << "Filtered size: " << filteredList->getSize() << endl;
     }
     cout << "Transaction data filtered by " << selectedChannel << endl;
+    if (structureChoice == 1)
+    {
+        cout << "Initial number of transaction data: " << arrStore.getSize() << endl;
+        cout << "Current number of transaction data: " << filtered.getSize() << endl;
+    }
+    else
+    {
+        cout << "Initial number of transaction data: " << list.getSize() << endl;
+        cout << "Current number of transaction data: " << filteredList->getSize() << endl;
+    }
 
     // requesting user if need to print data.
     // if yes, top 300 is printed
@@ -172,35 +203,38 @@ int main()
         switch (option)
         {
         case 1:
-            cout << "Sorting transaction data by location in ascending order...\n"
-                 << endl;
             if (structureChoice == 1)
             {
                 filtered.chooseAndSortByLocation();
             }
             else
             {
-                // sort method for linkedlist (place in measureAndReport)
+                filteredList->chooseAndSortByLocation();
             }
 
             askAndPrintData(filtered, filteredList, structureChoice);
             break;
         case 2:
         {
-            string type;
+            string type = transactionTypeArr.getUserChoice();
+
             if (structureChoice == 1)
             {
-                // search method for array
+                filtered.chooseAndSearchByTransactionType(type);
             }
             else
             {
-                // search method for linked list (place in measureAndReport)
+                // delete old pointer before reusing to save returned search results to avoid memory leak
+                // trying to avoid this: filteredList=filteredList->chooseAndSearchByTransactionType(type);
+                TransactionLinkedList *temp = filteredList->chooseAndSearchByTransactionType(type);
+                delete filteredList;
+                filteredList = temp;
             }
             askAndPrintData(filtered, filteredList, structureChoice);
             break;
         }
         case 3:
-            cout << "Exporting transaction data...";
+            cout << "\nExporting transaction data..." << endl;
             if (structureChoice == 1)
             {
                 filtered.exportToJSON("export/array.json");

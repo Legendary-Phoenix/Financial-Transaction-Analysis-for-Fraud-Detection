@@ -41,9 +41,9 @@ public:
     TransactionArray &operator=(const TransactionArray &other)
     {
         if (this == &other)
-            return *this; // Self-assignment check
+            return *this; // self-assignment check
 
-        delete[] data; // Free current data
+        delete[] data;
 
         capacity = other.capacity;
         size = other.size;
@@ -60,9 +60,9 @@ public:
     {
         if (size == capacity)
         {
-            cout << "Current capacity is: " << capacity << endl;
+            // cout << "Current capacity is: " << capacity << endl;
             resize(); // size is doubled when full
-            cout << "Capacity doubled. Current capacity: " << capacity << endl;
+            // cout << "Capacity doubled. Current capacity: " << capacity << endl;
         }
         data[size++] = t;
     }
@@ -78,26 +78,75 @@ public:
     {
         delete[] data;
     }
-    // sorting
+    // merge sort
     void mergeSortByLocation()
     {
         mergeSort(data, 0, size - 1);
     }
-
-    void bubbleSortByLocation()
+    // insertion sort
+    void insertionSortByLocation()
     {
-        for (int i = 0; i < size - 1; ++i)
+        for (int i = 1; i < size; ++i)
         {
-            for (int j = 0; j < size - i - 1; ++j)
+            Transaction key = data[i];
+            int j = i - 1;
+
+            // move elements greater than key to one position ahead
+            while (j >= 0 && data[j].location > key.location)
             {
-                if (data[j].location > data[j + 1].location)
-                {
-                    // swap transactions
-                    Transaction temp = data[j];
-                    data[j] = data[j + 1];
-                    data[j + 1] = temp;
-                }
+                data[j + 1] = data[j];
+                j--;
             }
+
+            data[j + 1] = key;
+        }
+    }
+
+    // search using linear search
+
+    void linearSearch(const string &tType)
+    {
+        int transactionDataSize = 0;
+        for (int i = 0; i < size; i++)
+        {
+            if (data[i].transaction_type == tType)
+            {
+                // rewriting the TransactionArray entirely
+                data[transactionDataSize] = data[i];
+                transactionDataSize++;
+            }
+        }
+        size = transactionDataSize;
+    }
+
+    // search using self-adjusting linear search
+    void selfAdjustingLinearSearch(const string &tType)
+    {
+        bool found = false;
+        int write = 0;
+
+        for (int i = 0; i < size; ++i)
+        {
+            if (data[i].transaction_type == tType)
+            {
+                found = true;
+                // rewriting the array
+                data[write] = data[i];
+                // Move-to-front within filtered portion
+                if (write > 0)
+                {
+                    Transaction temp = data[write];
+                    data[write] = data[write - 1];
+                    data[write - 1] = temp;
+                }
+                write++;
+            }
+        }
+        size = write;
+
+        if (!found)
+        {
+            cout << "No transactions of type '" << tType << "' found.\n";
         }
     }
 
@@ -106,9 +155,9 @@ public:
         int sortChoice;
         do
         {
-            cout << "Choose a sorting method:\n";
+            cout << "\nChoose a sorting method:\n";
             cout << "1. Merge Sort\n";
-            cout << "2. Bubble Sort\n";
+            cout << "2. Insertion Sort\n";
             cout << "Enter choice: ";
             cin >> sortChoice;
 
@@ -118,6 +167,7 @@ public:
             }
 
         } while (sortChoice != 1 && sortChoice != 2);
+
         cout << "\nSorting transaction data by location in ascending order..." << endl;
         if (sortChoice == 1)
         {
@@ -126,9 +176,43 @@ public:
         }
         else
         {
-            measureAndReport("Bubble sort", [&]()
-                             { bubbleSortByLocation(); });
+            measureAndReport("Insertion sort", [&]()
+                             { insertionSortByLocation(); });
         }
+    }
+
+    void chooseAndSearchByTransactionType(const string &type)
+    {
+        int searchChoice;
+        do
+        {
+            cout << "\nChoose a searching method:\n";
+            cout << "1. Linear Search\n";
+            cout << "2. Self-Adjusting Linear Search\n";
+            cout << "Enter choice: ";
+            cin >> searchChoice;
+
+            if (searchChoice != 1 && searchChoice != 2)
+            {
+                cout << "Invalid searching option.\n";
+            }
+
+        } while (searchChoice != 1 && searchChoice != 2);
+        int initialSize = size;
+        cout << "\nSearching transaction data of type " << type << "..." << endl;
+
+        if (searchChoice == 1)
+        {
+            measureAndReport("Linear search", [&]()
+                             { linearSearch(type); });
+        }
+        else
+        {
+            measureAndReport("Self-adjusting linear search", [&]()
+                             { selfAdjustingLinearSearch(type); });
+        }
+        cout << "Initial number of transaction data: " << initialSize << endl;
+        cout << "Current number of transaction data: " << size << endl;
     }
 
     void exportToJSON(const string &filename) const
