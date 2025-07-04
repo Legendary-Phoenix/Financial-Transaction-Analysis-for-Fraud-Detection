@@ -191,6 +191,7 @@ int main()
             if (structureChoice == 1)
             {
                 // search method for array
+                filtered.chooseAndSearchByTransactionType();
             }
             else
             {

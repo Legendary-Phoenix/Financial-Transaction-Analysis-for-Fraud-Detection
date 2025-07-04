@@ -7,6 +7,8 @@ using namespace std;
 #include <fstream>
 #include "utils/MergeSort.h"
 #include "utils/MeasureTime.h"
+#include <string>
+
 
 class TransactionArray
 {
@@ -130,6 +132,97 @@ public:
                              { bubbleSortByLocation(); });
         }
     }
+
+    void chooseAndSearchByTransactionType() {
+        int searchChoice;
+        int tTypeChoice;
+        string tTypes[] = {"withdrawal", "deposit", "transfer", "payment"};
+
+        do {
+            cout << "\nChoose a searching method" << endl;
+            cout << "1. Linear Search" << endl;
+            cout << "2. Self Adjusting Linear Search" << endl;
+            cout << "Enter a choice: ";
+            cin >> searchChoice;
+
+            if (searchChoice !=1 && searchChoice != 2) {
+                cout << "Invalid searching option";
+            }
+
+        } while (searchChoice != 1 && searchChoice != 2);
+
+        do {
+            cout << "\nChoose a transaction type" << endl;
+            cout << "1. withdrawal" << endl;
+            cout << "2. deposit" << endl;
+            cout << "3. transfer" << endl;
+            cout << "4. payment" << endl;
+            cout << "Enter a choice: ";
+            cin >> tTypeChoice;
+
+            if (tTypeChoice != 1 && tTypeChoice != 2 && tTypeChoice != 3 && tTypeChoice != 4) { 
+                cout << "Invalid choice"; 
+            }
+        } while (tTypeChoice != 1 && tTypeChoice != 2 && tTypeChoice != 3 && tTypeChoice != 4);
+
+        string tType = tTypes[tTypeChoice-1];
+
+        //if linear search 
+        if (searchChoice == 1) {
+            measureAndReport("Linear search", [&]()
+                             { linearSearch(tType); });
+        } else { 
+            //if self adjusting linear search
+            measureAndReport("Self Adjusting Linear Search", [&]()
+                             { selfAdjustingLinearSearch(tType); });
+        }
+        
+    }
+
+    void linearSearch(const string &tType) {
+        int transactionDataSize = 0;
+        for (int i=0; i < size; i++) {
+            if (data[i].transaction_type == tType) {
+                //rewriting the TransactionArray entirely
+                data[transactionDataSize] = data[i];
+                transactionDataSize++;
+            }
+        }
+        size = transactionDataSize;
+
+
+    }
+
+    void selfAdjustingLinearSearch(const string &tType) {
+        bool found = false;
+        int write = 0;
+
+        for (int i = 0; i < size; ++i)
+        {
+            if (data[i].transaction_type == tType)
+            {
+                found = true;
+                // rewriting the array
+                data[write] = data[i];
+                // Move-to-front within filtered portion
+                if (write > 0)
+                {
+                    Transaction temp = data[write];
+                    data[write] = data[write - 1];
+                    data[write - 1] = temp;
+                }
+                write++;
+            }
+        }
+        size = write;
+
+        if (!found)
+        {
+            cout << "No transactions of type '" << tType << "' found.\n";
+        }
+    }
+
+
 
     void exportToJSON(const string &filename) const
     {
