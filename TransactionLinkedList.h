@@ -164,4 +164,56 @@ public:
 
         return result;
     }
+
+    void moveNodeToFront(TransactionNode* prev, TransactionNode* current)
+{
+    if (!prev || !current || current == head)
+        return; // Nothing to do if current is already head or invalid
+
+    prev->next = current->next; // Remove current from its position
+    current->next = head;       // Point current to old head
+    head = current;             // Update head
+}
+
+
+    TransactionLinkedList* searchSelfAdjustTransactionType(const string &type)
+    {
+        TransactionLinkedList* result = new TransactionLinkedList();
+
+        // // Handle head separately
+        // while (head && head->data.transaction_type == type)
+        // {
+        //     result->add(head->data);
+        //     moveNodeToFront(head, nullptr); // Already at front, just keep
+        // }
+
+        TransactionNode* prev = head;
+        if (!prev) return result;
+
+        TransactionNode* current = head->next;
+
+        while (current)
+        {
+            if (current->data.transaction_type == type)
+            {
+                result->add(current->data);
+
+                // Move current to front
+                prev->next = current->next;
+                current->next = head;
+                head = current;
+
+                // Start again after head change
+                current = prev->next;
+            }
+            else
+            {
+                prev = current;
+                current = current->next;
+            }
+        }
+
+        return result;
+    }
+
 };

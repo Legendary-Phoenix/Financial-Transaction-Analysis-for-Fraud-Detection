@@ -198,16 +198,40 @@ int main()
                 // search method for linked list (place in measureAndReport)
 
                 // showaskTransactionType() needs transactionTypeArray
-                // Display payment channel options
+                // Display transaction type options
                 transactionTypeArr.printOptions();
                 cout << "Select a transaction type (1-" << transactionTypeArr.getSize() << "): ";
                 int searchChoice;
                 cin >> searchChoice;
                 string selectedType = transactionTypeArr.get(searchChoice - 1);
-                cout << "Searching transaction data by " << selectedType << "..." << endl;
+
+                cout << "Select an algorithm to search with: " << endl << 
+                "1. Linear Search" << endl <<
+                "2. Linear Self-adjusting Search" << endl;
+                int algoChoice;
+                cin >> algoChoice;
+
+                switch (algoChoice)
+                {
+                case 1:
+                    /* code */
+                    cout << "Searching transaction data by " << selectedType << "on Linear Search ..." << endl;
                 
-                measureAndReport("Search", [&]()
-                                 { filteredList = list.searchByTransactionType(selectedType); });
+                    measureAndReport("Linear Search", [&]()
+                    { filteredList = list.searchByTransactionType(selectedType); });
+                    break;
+                
+                case 2:
+                    cout << "Searching transaction data by " << selectedType << "on Linear Self-adjusting Search ..." << endl;
+                
+                    measureAndReport("Linear Self-adjusting Search ", [&]()
+                    { filteredList = list.searchSelfAdjustTransactionType(selectedType); });
+                    break;
+
+                default:
+                    cout << "Invalid option. Try again\n"
+                     << endl;
+                }
             }
             askAndPrintData(filtered, filteredList, structureChoice);
             break;
