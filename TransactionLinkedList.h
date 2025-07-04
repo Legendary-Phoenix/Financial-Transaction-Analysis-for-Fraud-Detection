@@ -13,6 +13,63 @@ private:
     TransactionNode *head;
     int size;
 
+    // START FOR MERGE SORT
+    TransactionNode *getMiddle(TransactionNode* start){
+        if (!start)
+        {
+            return nullptr;
+        }else{
+            TransactionNode *slow = start; 
+            TransactionNode *fast = start -> next;
+            while (fast && fast -> next)
+            {
+                slow = slow -> next;
+                fast = fast -> next -> next;
+            }
+            return slow;
+        }
+    }
+
+    TransactionNode *mergeSortedByLocation(TransactionNode *left, TransactionNode *right)
+    {
+        if (!left){
+            return right;
+        }
+
+        if (!right){
+            return left;
+        }
+
+        TransactionNode *result = nullptr;
+
+        if (left -> data.location <= right -> data.location)
+        {
+            result = left;
+            result -> next = mergeSortedByLocation(left -> next, right);
+        }else{
+            result = right;
+            result -> next = mergeSortedByLocation(left, right -> next);
+        }
+
+        return result;
+    }
+
+    TransactionNode *mergeSortByLocationHelper(TransactionNode* node)
+    {
+        if (!node || !node -> next)
+        {
+            return node;
+        }
+        TransactionNode *middle = getMiddle(node);
+        TransactionNode *nextToMiddle = middle -> next;
+        middle -> next = nullptr;
+        
+        TransactionNode *left = mergeSortByLocationHelper(node);
+        TransactionNode *right = mergeSortByLocationHelper(nextToMiddle);
+
+        return mergeSortedByLocation(left, right);
+    }
+    // END MERGE SORT IN PRIVATE
 public:
     TransactionLinkedList()
     {
@@ -149,7 +206,7 @@ public:
     }
 
     // SORT LINKED LIST USING BUBBLE SORT BY LOCATION
-    void sortByLocation()
+    /*void sortByLocation()
     {
         if (!head || !head -> next)
         {
@@ -171,7 +228,15 @@ public:
                 current = current -> next;
             }
         }while (swapped);
+    }*/
+
+
+    // START SORTING USING MERGE SORT FOR LINKED LIST
+    void mergeSortByLocation()
+    {
+        head = mergeSortByLocationHelper(head);
     }
+
 
      // SORTING USING INSERTION SORT LINKED LIST BY LOCATION
     void insertionSortByLocation()

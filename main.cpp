@@ -181,7 +181,7 @@ int main()
             {
                 do
                 {
-                    cout << "1. Bubble Sort" << endl;
+                    cout << "1. Merge Sort" << endl;
                     cout << "2. Insertion Sort" << endl;
                     cout << "Choose what algorithm of sorting want to use: ";
                     cin >> sortingLink;
@@ -189,8 +189,8 @@ int main()
                     if (sortingLink == 1)
                     {
                         // sort method for linkedlist (place in measureAndReport)
-                        measureAndReport("Bubble sort (Linked List)", [&]()
-                        {filteredList -> sortByLocation();});
+                        measureAndReport("Merge sort (Linked List)", [&]()
+                        {filteredList -> mergeSortByLocation();});
                         break;
                     }else if (sortingLink == 2)
                     {
